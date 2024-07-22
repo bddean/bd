@@ -10,7 +10,12 @@ in {
 	devShells.x86_64-linux.default = pkgs.mkShell {
 		buildInputs = with pkgs; [
 			ciao
+			rsync
 		];
+		shellHook = ''
+			export CIAOPATH="$PWD/ws"
+			export PATH="$PWD/ws/build/bin:$PATH"
+		'';
 	};
 };
 

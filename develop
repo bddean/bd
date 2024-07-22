@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# This script is used by the server. Locally, direnv enters the dev shell
+# automatically.
+nix --extra-experimental-features nix-command \
+	--extra-experimental-features flakes \
+	develop
