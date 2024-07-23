@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "ciaodbg": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1709662552,
+        "narHash": "sha256-eoUb4w54ZkXSZtD7MF80yT05u9+22lFt6jdoNp4F4X8=",
+        "owner": "ciao-lang",
+        "repo": "ciaodbg",
+        "rev": "a8e89a806df31ac7b6453c8e80211e2821180e6e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ciao-lang",
+        "repo": "ciaodbg",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1721466660,
@@ -16,6 +32,7 @@
     },
     "root": {
       "inputs": {
+        "ciaodbg": "ciaodbg",
         "nixpkgs": "nixpkgs"
       }
     }

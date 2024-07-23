@@ -1,9 +1,9 @@
-:- bundle(utility).
+:- bundle(webapp).
 version('0.1').
 depends([
 	core,
-	unittest
+	utility
 ]).
 alias_paths([
-  utility=src
+  webapp=src
 ]).

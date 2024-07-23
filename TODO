@@ -1,0 +1,4 @@
+- ciao test only works if ciaodb is installed in ciao root >_<
+- check nix flake to see if this is configurable
+- ... but this is likely not that hard. the ciao deriviation is very simple.
+

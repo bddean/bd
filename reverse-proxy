@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+caddy reverse-proxy --from bendean.name --to :8080
