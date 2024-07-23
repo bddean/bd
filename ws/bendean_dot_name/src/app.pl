@@ -2,22 +2,16 @@
 	handle/4,
 	static_page/2
 ], [pillow, fsyntax, hiord]).
+:- use_module(webapp(dom), [dom_html/2]).
 
-%handle(get, "/", _Request) := html_string("
-	%<!DOCTYPE html>
-	%<h1>I have a website! neat!</h1>
-%").
-%
 handle(get, Path, _Request) := html_string(Html) :-
-	static_page(Path, Terms),
-	html2terms(Html, Terms).
+	static_page(Path, Dom),
+	dom_html(Dom, Html).
 
 static_page("/") := [
-	"<!DOCTYPE html>",
-	head([], [
-	]),
-	body([], [
-		h1([], ["Welcome!"])
-	])
-
+	inline_html("<!DOCTYPE html>"),
+	head>[],
+	body>[
+		h1>[+"My personal website -- under construction!"]
+	]
 ].

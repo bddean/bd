@@ -1,1 +1,0 @@
-test_attributes_db('dom#14#15',dom,dom_pillow,2,['D'=A,'P'=B],[],::(dom_pillow(A,B),=>([]:[A=text([104,101,108,108,111])],[B=verbatim([104,105])]+[]#[])),loc('webapp/src/dom.pl',14,15)).
