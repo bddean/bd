@@ -14,8 +14,9 @@ outputs = { self, nixpkgs, ciaodbg }: let
 	pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	my-ciao = pkgs.ciao.overrideAttrs(oldAttrs : {
 		buildPhase =  ''
+			cp -r ${ciaodbg} ./ciaodbg
+			chmod -R u+w ./ciaodbg
 			${oldAttrs.buildPhase}
-			cp -r ${ciaodbg} .
 		'';
 	});
 in {
@@ -23,6 +24,7 @@ in {
 		buildInputs = with pkgs; [
 			caddy
 			rsync
+			my-ciao
 		];
 		shellHook = ''
 			export CIAOPATH="$PWD/ws"
