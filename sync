@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
+# TODO Copy transitive dependencies
+# There was a guide on this blog somewhere https://fzakaria.com/
 rsync -va --delete $PWD root@bendean.name:~

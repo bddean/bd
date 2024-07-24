@@ -1,0 +1,41 @@
+/*************
+ * Property controls styles. See the DOM layout in PROPS in
+ * ./main.js.
+ */
+
+/* Layout */
+.props               { display: grid; grid-auto-rows: min-content;}
+/*.props > label       { grid-row: 1; }*/
+/*.props > :not(label) { grid-row: 2; }*/
+
+/* Looks */
+.props {
+	font-size: smaller;
+	padding-left: 6px; margin-left: 6px;
+	& :is(input, select, textarea) {
+		border: none;
+		border-bottom: 1px dotted black;
+	}
+	& * { background: transparent; }
+}
+
+
+select[name=task] {
+	&:has([value=""]:checked) { font-style: italic; }
+	&:has([value="TODO"]:checked) { font-weight: bold; }
+	&:has([value="DONE"]:checked) {  }
+	&:has([value="PROG"]:checked) { font-weight: bold; font-style: italic; }
+}
+
+/* Special styles for certain elements. */
+/*.card[data-task=TODO] > .props [name=task] { background-color: #fcc; }
+.card[data-task=DONE] > .props [name=task] { background-color: #ccf; }
+.card[data-task=PROG] > .props [name=task] { background-color: #cfc; }*/
+
+.card:not([_selected])[data-task=DONE] > .content {
+	text-decoration: line-through;
+}
+
+textarea[name=tags] { font-family: monospace; font-size: smalle;}
+.props textarea { resize: none; }
+

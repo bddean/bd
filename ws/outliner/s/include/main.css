@@ -1,0 +1,21 @@
+/* Toplevel page layout:
+	#main > :is(#filter, #toolbar, #_allcards)
+*/
+
+/* todo should be main tag? */
+#main {
+	display: grid;
+	grid-template-rows: min-content min-content 1fr;
+	max-height: 100vh;
+}
+
+#filter {
+	display: grid;
+	grid-template-columns: 1fr 200px;
+	grid-template-rows: min-content;
+}
+#_filter_input { height: 1rem; }
+
+#_allcards {
+	overflow: scroll;
+}

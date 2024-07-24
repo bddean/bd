@@ -1,1 +1,0 @@
-dom_shfr_eterms_co.pl

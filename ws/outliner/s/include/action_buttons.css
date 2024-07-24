@@ -1,0 +1,34 @@
+@counter-style kbd {
+	system: fixed;
+	symbols: a s d f j k l ';' g h;
+	fallback: " ";
+}
+
+[action]{
+	counter-increment: nth-action;
+	&::before {
+		font-family: monospace;
+		font-size: 12px;
+		content: '[' counter(nth-action, kbd) ']\00a0'; /* (nbsp) */
+	}
+
+	&::after  { content: attr(action); }
+	&[group]:not([group=""]) { display: none; } /* Overridden in actions.js */
+}
+
+body[keypress] [action]::before {
+	font-weight: bold;
+	color: var(--red);
+}
+
+/*** Special styles for certain actions ***/
+:is(
+	  :root:is([view=prose],:not([view])) button[action=prose]
+	, :root[view=rows] button[action=rows]
+	, :root[view=close] button[action=close]
+/* TODO kid,sib,drop,pop */
+) {
+	pointer-events: none;
+	opacity: 30%;
+}
+
