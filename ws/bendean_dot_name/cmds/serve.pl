@@ -1,4 +1,4 @@
-:- module(serve, [main/1], [utility(common)]).
+:- module(serve, [main/0, main/1], [utility(common)]).
 
 :- use_module(library(http/http_server)).
 :- use_module(library(bundle/bundle_paths)).
@@ -21,7 +21,8 @@
 
 'httpserv.file_path'('/s') := ~bundle_path(bendean_dot_name, s).
 
-main([]) :- main(['80']).
+main :- main([]).
+main([]) :- main(['8080']).
 main([PortA]) :- atom_number(PortA, Port),
 	format("Serving at localhost:~w~n", [Port]),
 	http_bind(Port),
