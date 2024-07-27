@@ -11,11 +11,11 @@
 
 handle(get, Path, _Request) := html_string(Html) :-
 	%for debugging.
-	toplevel:use_module(library(bendean_dot_name/app)),
+	toplevel:use_module(library(bendean_dot_name)),
 	static_page(Path, Dom),
 	dom_html(Dom, Html).
 
-handle(get, "/outliner", Req) := ~(outliner:handle(get, "/", Req)).
+handle(Method, "/outliner", Req) := ~(outliner:handle(Method, "/", Req)).
 
 static_page("/") := [
 	inline_html("<!DOCTYPE html>"),
