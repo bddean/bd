@@ -6,7 +6,7 @@
 
 :- include(library(http/http_server_hooks)).
 
-:- use_module(bendean_dot_name(app), [handle/4]).
+:- use_module(library(bendean_dot_name), [handle/4]).
 
 %% Server-side hot reloading.
 
@@ -17,7 +17,7 @@
 
 'httpserv.handle'(Path, Req, Rsp) :-
 	member(method(Method), Req),
-	app:handle(Method, Path, Req, Rsp).
+	bendean_dot_name:handle(Method, Path, Req, Rsp).
 
 'httpserv.file_path'('/s') := ~bundle_path(bendean_dot_name, s).
 

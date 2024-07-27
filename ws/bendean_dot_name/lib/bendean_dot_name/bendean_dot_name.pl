@@ -1,17 +1,21 @@
-:- module(app, [
+:- module(bendean_dot_name, [
 	handle/4,
 	static_page/2
 ], [pillow,  utility(common)]).
 :- use_module(webapp(dom), [dom_html/2]).
 :- use_module(library(toplevel)).
 
+:- use_module(library(outliner), [handle/4]).
+
 :- fun_eval hiord(true).
 
 handle(get, Path, _Request) := html_string(Html) :-
 	%for debugging.
-	toplevel:use_module(bendean_dot_name(app)),
+	toplevel:use_module(library(bendean_dot_name/app)),
 	static_page(Path, Dom),
 	dom_html(Dom, Html).
+
+handle(get, "/outliner", Req) := ~(outliner:handle(get, "/", Req)).
 
 static_page("/") := [
 	inline_html("<!DOCTYPE html>"),
@@ -41,7 +45,8 @@ project_listitem := li>[
 
 :- push_prolog_flag(multi_arity_warnings, off).
 
-project("Notes", "Note / task management webapp", "https://github.com/bddean/bd/tree/main/ws/outliner").
+project(_, _, _) :- fail. %% TODO...
+project("Notes", "Note / task management webapp", "https://github.com/bddean/bd/tree/main/ws/outliner", "/outliner").
 project("[TODO] Boids", "Simple flocking simulation written in BQN", "#TODO", "#TODO").
 project("[TODO] aibox", "TODO!!", "#TODO", "#TODO").
 project("[TODO] srs?? maybe??", "TODO!!", "#TODO", "#TODO").

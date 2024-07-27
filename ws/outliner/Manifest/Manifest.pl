@@ -4,7 +4,7 @@ depends([
 	core
 ]).
 alias_paths([
-  ol=src,
+  outliner=src,
   library=lib
 ]).
 lib(lib).

@@ -1,4 +1,4 @@
-:- module(serve, [main/0, main/1, last_req/1], [ol(common)]).
+:- module(serve, [main/0, main/1, last_req/1], [outliner(common)]).
 
 :- use_module(library(http/http_server)).
 :- use_module(library(bundle/bundle_paths)).
@@ -6,7 +6,7 @@
 
 :- include(library(http/http_server_hooks)).
 
-:- use_module(ol(app), [handle/4]).
+:- use_module(library(outliner), [handle/4]).
 
 :- data last_req/1.
 
@@ -17,12 +17,12 @@
 
 'httpserv.handle'(_, _, _) :-
 	toplevel:use_module('cmds/serve'),
-	toplevel:use_module(ol(app)),
+	toplevel:use_module(outliner(app)),
 	fail.
 
 'httpserv.handle'(Path, Req, Rsp) :-
 	member(method(Method), Req),
-	app:handle(Method, Path, Req, Rsp).
+	outliner:handle(Method, Path, Req, Rsp).
 
 'httpserv.file_path'('/s') := ~bundle_path(outliner, s).
 
