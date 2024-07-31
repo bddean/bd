@@ -2,7 +2,6 @@
 <head>
 	<meta content="text-html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
-	<style> body { background-color: var(--background); } </style>
 
 </head>
 <body>
@@ -14,7 +13,7 @@
 	See <a href="https://en.wikipedia.org/wiki/Boids">Wikipedia</a>.
 </p>
 
-<canvas  id=canvas style="border: 1px solid var(--foreground);" id=canvas width=500 height=500></canvas>
+<canvas id=canvas style="border: 1px solid var(--foreground);" id=canvas width=500 height=500></canvas>
 
 <script>
 let flock;
@@ -25,11 +24,8 @@ const fetchScript = async () => {
 	flockScriptText = newFlockScriptText;
 	flock = bqn(flockScriptText);
 }
-const colors = [];
-const st = getComputedStyle(document.body);
-const bgColor = st.getPropertyValue('--background').trim();
-for (var i = 0; i < 16; i++) colors.push(st.getPropertyValue('--color'+i).trim());
-
+const bgColor = '#f1efee';
+const colors = ['#f22c40','#7b9726','#c38418','#407ee7','#6666ea','#3d97b8','#68615e','#9c9491','#f22c40','#7b9726','#c38418','#407ee7','#6666ea','#3d97b8','#1b1918'];
 
 const mouse={x:0,y:0};
 (async () => {
@@ -60,7 +56,7 @@ const mouse={x:0,y:0};
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 	while (true) {
-		ctx.fillStyle = bgColor+"68";
+		ctx.fillStyle = bgColor;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		const xs = nsget(state)('x');
 		const vs = nsget(state)('v');
