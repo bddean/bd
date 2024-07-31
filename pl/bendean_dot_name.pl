@@ -27,7 +27,7 @@ handle(get, "/boids/"||P, _) :=
 	""-'index.html',
 	[_|_]-P
 ]).
-handle(get, "/previewer/", _) :=
+handle(get, "/previewer/"||_, _) := %% (Need ||_ to ignore ?search)
 	file_if_newer(~bd_root/s/'previewer.html').
 
 static_page("/") := [
@@ -35,10 +35,6 @@ static_page("/") := [
 	head>[],
 	body>[
 		h1>[+"Ben Dean"],
-		p>[+"Ok, next thing to do: finish outliner (see my todo note)
-
-		And maybe restructure dir one more time: one big lib/
-		"],
 		h2>[+"Projects"],
 		ul>Lis
 	]
@@ -58,9 +54,13 @@ project_listitem := li>[
 project(_, _, _) :- fail. %% TODO...
 project("Outliner", "Note / task management webapp written mostly in vanilla JS and CSS", "https://github.com/bddean/bd/tree/main/pl/outliner.pl", "/outliner/").
 project("Boids", "Simple flocking simulation written in BQN", "https://github.com/bddean/bd/tree/main/s/bqn-boids/flock.bqn", "/boids/").
-project("Previewer", "Preview your page in multiple viewport sizes", "https://github.com/bddean/bd/tree/main/s/previewer.html", "/previewer/").
-project("[TODO] aibox", "TODO!!", "#TODO", "#TODO").
-project("[TODO] srs?? maybe??", "TODO!!", "#TODO", "#TODO").
-project("[TODO] solitaire?? maybe??", "TODO!!", "#TODO", "#TODO").
+project("Previewer", "View a webpage in different viewports side-by-side, implemented as a single HTML file", "https://github.com/bddean/bd/tree/main/s/previewer.html", "/previewer/").
+
+%% Not-yet-presentable projects..
+%%project("Ultimate tic-tac-toe", "TODO!!", "#TODO", "#TODO").
+	%% ^ In ~/tictactoe/, but I should add ai or network play or something
+%%project("aibox", "TODO!!", "#TODO", "#TODO").
+%%project("srs?? maybe??", "TODO!!", "#TODO", "#TODO").
+%%project("solitaire?? maybe??", "TODO!!", "#TODO", "#TODO").
 
 :- pop_prolog_flag(multi_arity_warnings).

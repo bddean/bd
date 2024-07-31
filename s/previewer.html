@@ -1,12 +1,9 @@
 <!--
 TODO:
-	- Find a way to do space-saving layout.
-	*. Silly picture of me with lots of devices
+	- Find a way to do automatic space-saving layout.
 	*. Save and restore state: In progress.
 		*. Add "breakpoints" that call pushState()
 		*. Maybe don't need to save URL every change.
-	*. Sensible default setup.
-	*. Deploy!
   -->
 
 <!DOCTYPE html>
@@ -55,14 +52,13 @@ TODO:
 	<a href="https://developer.chrome.com/docs/devtools/device-mode/">
 		tedious</a>.
 	See what your site looks like on every device you care about, side by side.
-	<a href="#tips">(tips)</a>
+	<a href="#tips">(Tips)</a>
 </p>
 
 <div style="margin-bottom: 20px;">
 	Currently showing
 	<input id=targetInput type=text value="http://example.com"></input>
 	<button title="reload previews" onclick="
-				i.dispatchEvent(new Event('change', {bubbles: true})); // Trigger iframe resize.
 		for (let frame of document.querySelectorAll('.viewport iframe')) {
 			frame.src=frame.src;
 		}
@@ -76,7 +72,7 @@ TODO:
 	<button title="new viewport" id=newViewportButton>0</button>
 	different devices, scaled by a factor of
 	<div style="display: inline-block">
-		<input style="display:block; width: 100px;" id=zoomOutSlider type=range min=1 max=100 value=50 />
+		<input style="display:block; width: 100px;" id=zoomOutSlider type=range min=1 max=100 value=30 />
 		<input style="display:block; width: 100px;" id=zoomOutText type=text />
 	</div>.
 </div>
@@ -93,11 +89,11 @@ TODO:
 <!-- State saving / restoring. -->
 <script>
 	const defaultState = {
-		"targetSrc":"http://localhost:5757/example.html",
-		"zoom":0.5,
+		"targetSrc":"http://example.com",
+		"zoom":0.3,
 		"devices":[
-			{"w":640,"h":480,"name":"(unnamed viewport)"},
-			{"w":640,"h":480,"name":"(unnamed viewport)"}
+			{"w":480,"h":640,"name":"Phone"},
+			{"w":1280,"h":1024,"name":"Laptop"}
 		]
 	};
 	function readState() {
