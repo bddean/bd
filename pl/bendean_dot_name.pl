@@ -4,6 +4,7 @@
 ], [pillow,  library(utility/common)]).
 :- use_module(library(webapp/dom), [dom_html/2]).
 :- use_module(library(toplevel)).
+:- use_module(library(system), [current_env/2]).
 
 :- use_module(library(outliner), [handle/5]).
 
@@ -15,7 +16,17 @@ handle(get, Path, _Request) := html_string(Html) :-
 	static_page(Path, Dom),
 	dom_html(Dom, Html).
 
+%% Routes for project demos....
+%% TODO clean static file serving
 handle(M, "/outliner/"||P, R) := ~(outliner:handle(demo, M, "/"||P, R)).
+handle(get, "/boids/"||P, _) := file_if_newer(Base/RelPath) :-
+	member(P-RelPath, [
+		""-'index.html',
+		[_|_]-P
+	]),
+	current_env('BD_ROOT', BD_ROOT),
+	atom_concat(BD_ROOT, '/s/bqn-boids/', Base).
+
 
 static_page("/") := [
 	inline_html("<!DOCTYPE html>"),
@@ -44,7 +55,7 @@ project_listitem := li>[
 
 project(_, _, _) :- fail. %% TODO...
 project("Notes", "Note / task management webapp", "https://github.com/bddean/bd/tree/main/ws/outliner", "/outliner/").
-project("[TODO] Boids", "Simple flocking simulation written in BQN", "#TODO", "#TODO").
+project("[TODO] Boids", "Simple flocking simulation written in BQN", "#TODO", "/boids/").
 project("[TODO] aibox", "TODO!!", "#TODO", "#TODO").
 project("[TODO] srs?? maybe??", "TODO!!", "#TODO", "#TODO").
 project("[TODO] solitaire?? maybe??", "TODO!!", "#TODO", "#TODO").

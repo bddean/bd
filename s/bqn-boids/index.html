@@ -1,0 +1,84 @@
+<html>
+<head>
+	<meta content="text-html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<style> body { background-color: var(--background); } </style>
+
+</head>
+<body>
+
+<script src='./lib/bqn.js'></script>
+
+<h1>Boids!</h1>
+<p>
+	See <a href="https://en.wikipedia.org/wiki/Boids">Wikipedia</a>.
+</p>
+
+<canvas  id=canvas style="border: 1px solid var(--foreground);" id=canvas width=500 height=500></canvas>
+
+<script>
+let flock;
+let flockScriptText;
+const fetchScript = async () => {
+	newFlockScriptText = await (await fetch('./flock.bqn')).text();
+	if (newFlockScriptText === flockScriptText) return;
+	flockScriptText = newFlockScriptText;
+	flock = bqn(flockScriptText);
+}
+const colors = [];
+const st = getComputedStyle(document.body);
+const bgColor = st.getPropertyValue('--background').trim();
+for (var i = 0; i < 16; i++) colors.push(st.getPropertyValue('--color'+i).trim());
+
+
+const mouse={x:0,y:0};
+(async () => {
+	const cBCR = canvas.getBoundingClientRect();
+	canvas.addEventListener('mousemove', e => {
+		mouse.x = e.clientX - cBCR.x;
+		mouse.y = e.clientY - cBCR.y;
+	});
+	await fetchScript();
+	// For testing:
+	// (async () => {while (true) { await new Promise(r=>setTimeout(r, 500)); await fetchScript(); }})();
+
+	const n = 20;
+	const rnd = Math.random;
+	const ixs = []; for (let i=0;i<n;i++)ixs.push(list([rnd()*500,rnd()*500]));
+	const ivs = []; for (let i=0;i<n;i++)ivs.push(list([rnd()*2-1,rnd()*2-1]));
+	// TODO bad bad!
+	state = bqn(`{
+		target⇐⟨${mouse.x} ⋄ ${mouse.y}⟩
+		x⇐𝕩
+		v⇐𝕨
+	}`)(list(ixs), list(ivs));
+	state = nsget(flock)('flock')(state, 0); // Get right ns indices.
+
+	ctx = canvas.getContext('2d');
+
+	ctx.fillStyle = "#119";
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+	while (true) {
+		ctx.fillStyle = bgColor+"68";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		const xs = nsget(state)('x');
+		const vs = nsget(state)('v');
+		for (let j = 0 ; j < xs.length ; j++) {
+			x = xs[j]; v = vs[j];
+			ctx.fillStyle = colors[j%16];
+			ctx.beginPath();
+			ctx.arc(x[0], x[1], 4, 0, 2 * Math.PI);
+			ctx.fill();
+		}
+		const start = performance.now();
+		await new Promise(requestAnimationFrame);
+		const dt = performance.now() - start;
+		state = nsget(flock)('flock')(state, dt);
+	}
+})();
+
+</script>
+
+
+</body></html>
