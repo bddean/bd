@@ -1,7 +1,7 @@
 :- module(dom, [
 	dom_html/2
 ], [
-	utility(common),
+	library(utility/common),
 	pillow,
 	block,
 	assertions, nativeprops, regtypes

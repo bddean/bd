@@ -2,10 +2,10 @@
 version('0.1').
 depends([
 	core,
-	unittest
+	ciaodbg
 ]).
 alias_paths([
-  library=lib
+  library='.'
 ]).
-lib(lib).
+lib('.').
 %cmd(bendean_dot_name, [main= 'cmds/serve']).

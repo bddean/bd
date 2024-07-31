@@ -5,7 +5,7 @@
 	path_atom_/2,
 	expand_response/3
 ], [
-	utility(common)
+	library(utility/common)
 ]).
 
 :- use_module(library(http/http_server)).

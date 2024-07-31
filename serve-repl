@@ -8,11 +8,11 @@ function die() {
 [[ "$1" ]] || die Need service name
 [[ "$2" ]] || die Need port
 
-ciao build -x $1
+ciao build -x .
 
 # Start server in background with repl running.
 ciao toplevel                           \
-	-u "./ws/webapp/lib/webapp/webapp.pl" \
+	-u "./pl/lib/webapp/webapp.pl"        \
 	-e 'use_module(library(concurrency))' \
 	-e 'use_module(library(listing))'     \
 	-e 'use_module(library(librowser))'   \

@@ -1,8 +1,8 @@
 :- module(bendean_dot_name, [
 	handle/4,
 	static_page/2
-], [pillow,  utility(common)]).
-:- use_module(webapp(dom), [dom_html/2]).
+], [pillow,  library(utility/common)]).
+:- use_module(library(webapp/dom), [dom_html/2]).
 :- use_module(library(toplevel)).
 
 :- use_module(library(outliner), [handle/5]).

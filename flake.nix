@@ -27,8 +27,9 @@ in {
 			my-ciao
 		];
 		shellHook = ''
-			export CIAOPATH="$PWD/ws"
-			export PATH="$PWD/ws/build/bin:$PATH"
+			export BD_ROOT="$PWD"
+			export CIAOPATH="$PWD"
+			export PATH="$PWD/build/bin:$PATH"
 		'';
 	};
 };

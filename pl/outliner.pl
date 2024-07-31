@@ -2,10 +2,10 @@
 	handle/5,
 	gather_head_inclusions/1, %% TEMP -- for testing
 	gather_head_inclusions_/2 %% TEMP -- for testing
-], [utility(common), pillow]).
+], [library(utility/common), pillow]).
 :- use_package(dcg/dcg_phrase).
 :- use_module(library(stream_utils), [file_to_string/2, string_to_file/2]).
-:- use_module(webapp(dom), [dom_html/2]).
+:- use_module(library(webapp/dom), [dom_html/2]).
 
 :- include(library(webapp/webapp_hooks)).
 :- use_module(library(bundle/bundle_paths), [bundle_path/3]).
