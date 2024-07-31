@@ -6,9 +6,9 @@
 :- use_package(dcg/dcg_phrase).
 :- use_module(library(stream_utils), [file_to_string/2, string_to_file/2]).
 :- use_module(library(webapp/dom), [dom_html/2]).
+:- use_module(library(system), [current_env/2]).
 
 :- include(library(webapp/webapp_hooks)).
-:- use_module(library(bundle/bundle_paths), [bundle_path/3]).
 
 mode := demo | local. %% TODO not referenced; use as a type
 filepath := '/home/ben/ol.html'.
@@ -39,7 +39,7 @@ get_doc_contents_(demo) := ~dom_html([
 			],
 			NoteCard > [
 				Content > [
-					+"Obligatory Lorem Ipsum",
+					+"Some filler text",
 					div > +"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 				],
 				Catalog > []
@@ -51,9 +51,6 @@ get_doc_contents_(demo) := ~dom_html([
 	TodoCard = div $ [class=card, 'data-task'='TODO'],
 	Content = div $ [class=content, contenteditable],
 	Catalog = div $ [class=catalog].
-
-
-	%"<h1>TODO!!</h1>".
 
 handle(Mode, post, "/save", Request) := string_(
 	status(success, 200, "OK"),
@@ -71,7 +68,8 @@ handle(Mode, get, "/", _Request) := html_string(HTML) :-
 
 handle(_, get, "/s/"||RelPath, _) := file_if_newer(Base/RelPath) :-
 	%% TODO check security.
-	bundle_path(outliner, s, Base).
+	current_env('BD_ROOT', BD_ROOT),
+	atom_concat(BD_ROOT, '/s/', Base).
 
 %% TODO extract my dom_expand stuff here??
 %% TODO let's query dir for this
@@ -140,7 +138,7 @@ toolbar_dom__action_btn_(G-A) := button([group=G,action=A], []).
 :- use_module(library(system), [directory_files/2, file_property/2]).
 :- use_module(library(pathnames), [path_concat/3, path_dirname/2]).
 
-gather_head_inclusions := ~gather_head_inclusions_(~bundle_path(outliner,  's/include/')).
+gather_head_inclusions := ~gather_head_inclusions_(~atom_concat(~current_env('BD_ROOT'),  '/s/include/')).
 
 suffix_(A, End)  :- atom_concat(_, End, A).
 
@@ -151,12 +149,13 @@ suffix_(A, End)  :- atom_concat(_, End, A).
 %% - and then support general absolute path
 
 %% TODO sort these?
+%% TODO get rid of this...
 gather_head_inclusions_(F, []) :- suffix_(F, ('/.' | '/..')), !.
 gather_head_inclusions_(F, [T]) :-
 	file_property(F, type(regular)),
 	%% TODO: Generalize, obviously!
 	atom_concat([
-		~bundle_path(outliner,  '.'), '/', RelPath
+		~current_env('BD_ROOT') , '/', RelPath
 	], F),
 	member(Suffix-T, [
 		'.js' -script([type=module, src=RelPath], []),

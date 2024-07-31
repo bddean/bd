@@ -12,7 +12,7 @@ ciao build -x .
 
 # Start server in background with repl running.
 ciao toplevel                           \
-	-u "./pl/lib/webapp/webapp.pl"        \
+	-u "./pl/webapp/webapp.pl"        \
 	-e 'use_module(library(concurrency))' \
 	-e 'use_module(library(listing))'     \
 	-e 'use_module(library(librowser))'   \
