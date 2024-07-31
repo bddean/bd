@@ -17,5 +17,5 @@ Flock ⇐ {dt 𝕊  ⟨x,v,target⟩ :
 	v ×↩ 0.99 # Friction
 	v ↩ ¯25 ⌈ 25 ⌊ v # Terminal velocity
 	x +↩  dt×v
-	x ↩ 500 | x # Wrap.
+	x ↩ 500 | x # Wrap around the edges of the canvas.
 }

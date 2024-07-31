@@ -1,0 +1,353 @@
+<!--
+TODO:
+	- Find a way to do space-saving layout.
+	*. Silly picture of me with lots of devices
+	*. Save and restore state: In progress.
+		*. Add "breakpoints" that call pushState()
+		*. Maybe don't need to save URL every change.
+	*. Sensible default setup.
+	*. Deploy!
+  -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<link rel=stylesheet href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<style>
+	* { box-sizing: border-box; }
+	[template] {
+		display: none !important;
+	}
+	button {
+		padding: 0;
+	}
+	button > span.material-icons {
+		font-size: 18px;
+	}
+</style>
+<script>
+	// Utilities.
+	const template = new Proxy({}, {
+		get: (_, name) => {
+			return () => {
+				const n = document.querySelector(`[template=${name}]`).cloneNode(true);
+				n.removeAttribute("template");
+				n.setAttribute("from-template", name);
+				return n;
+			}
+		}
+	});
+	
+</script>
+
+
+</head>
+
+<body id="body" style="visibility: hidden;">
+
+<h2> Design a responsive website </h2>
+
+<p>
+	Responsive design is
+	<a href="https://developers.google.com/search/mobile-sites/mobile-seo/responsive-design">
+		important</a>.
+	But testing can be 
+	<a href="https://developer.chrome.com/docs/devtools/device-mode/">
+		tedious</a>.
+	See what your site looks like on every device you care about, side by side.
+	<a href="#tips">(tips)</a>
+</p>
+
+<div style="margin-bottom: 20px;">
+	Currently showing
+	<input id=targetInput type=text value="http://example.com"></input>
+	<button title="reload previews" onclick="
+				i.dispatchEvent(new Event('change', {bubbles: true})); // Trigger iframe resize.
+		for (let frame of document.querySelectorAll('.viewport iframe')) {
+			frame.src=frame.src;
+		}
+	">
+		<span class="material-icons">
+			refresh
+		</span>
+	</button>
+	as it would appear on
+	<script> const updateNumViewports = () =>  newViewportButton.textContent = document.querySelectorAll("[from-template=viewport]").length; </script>
+	<button title="new viewport" id=newViewportButton>0</button>
+	different devices, scaled by a factor of
+	<div style="display: inline-block">
+		<input style="display:block; width: 100px;" id=zoomOutSlider type=range min=1 max=100 value=50 />
+		<input style="display:block; width: 100px;" id=zoomOutText type=text />
+	</div>.
+</div>
+
+<script>
+	let _zoom = undefined;
+	const {zoomOutSlider: s, zoomOutText: t} = window;
+	s.addEventListener('change', () => { t.value = Number(s.value) / 100; });
+	t.addEventListener('change', () => { s.value = Number(t.value) * 100; });
+	t.value = Number(s.value) / 100;
+	const zoom = () => Number(t.value);
+</script>
+
+<!-- State saving / restoring. -->
+<script>
+	const defaultState = {
+		"targetSrc":"http://localhost:5757/example.html",
+		"zoom":0.5,
+		"devices":[
+			{"w":640,"h":480,"name":"(unnamed viewport)"},
+			{"w":640,"h":480,"name":"(unnamed viewport)"}
+		]
+	};
+	function readState() {
+		return {
+			targetSrc: targetSrc(),
+			zoom: zoom(),
+			devices: [...document.querySelectorAll("[from-template=viewport]")].map(el => ({
+				w: +el.querySelector(".dim").value,
+				h: +el.querySelectorAll(".dim")[1].value,
+				name: el.querySelector(".title").textContent.trim()
+			}))
+		};
+	}
+	function restoreState(s) {
+		targetInput.value = s.targetSrc;
+		zoomOutText.value = s.zoom;
+		zoomOutSlider.value = s.zoom * 100;
+		const vpS = document.querySelectorAll("[from-template=viewport]");
+		for (const vp of vpS) {
+			vp.parentNode.removeChild(vp);
+		}
+		for (const d of s.devices) {
+			const el = viewportEl(d.w, d.h);
+			el.querySelector(".title").textContent = d.name;
+			container.appendChild(el);
+		}
+		updateNumViewports();
+	}
+	function pushStateToUrl() {
+		const s = readState();
+		const encoded = encodeURIComponent(JSON.stringify(s));
+		history.pushState(s, "", `?state=${encoded}`);
+	}
+	function restoreStateFromUrl() {
+		const url = new URL(location.href)
+		let state = defaultState;
+		if (url.searchParams.get("state")) {
+			state = JSON.parse(url.searchParams.get("state"));
+		}
+		restoreState(state);
+	}
+	addEventListener("DOMContentLoaded", () => {
+		restoreStateFromUrl()
+		document.body.style.visibility = "visible";
+	});
+	addEventListener("popstate", restoreStateFromUrl);
+
+	// If *anything* changes, push the state. Other cases are handled case-by-case below.
+	addEventListener("change", pushStateToUrl);
+</script>
+
+<div id=container style="background-color: #ddddff">
+	<style>
+		#container {
+			/* display: grid;
+			grid-auto-flow: dense; */
+		}
+		.viewport {
+			display: inline-block;
+			margin: 4px;
+			/* Leave enough space for widgets. */
+			min-width: 150px;
+			min-height: 60px;
+			border: 1px solid #333;
+			border-radius: 4px;
+			background-color: #bbb;
+			overflow: none;
+		}
+		.viewport-content-container {
+			padding: 7px;
+		}
+		.viewport input.dim {
+ 			display: inline-block; 
+			width: 38px;
+			text-align: center;
+			border: 1px dotted blue;
+		}
+		.viewport .title-bar {
+			
+			background-color: #eee;
+			width: fit-content;
+			border: 1px solid #333;
+			border-radius: 3px;
+			padding: 2px;
+			margin-bottom: 4px;
+		}
+		.viewport .title-bar .title-row {
+			display: inline-block;
+		}
+		.viewport .title,input {
+			background-color: white;
+			border: 1px dotted blue;
+		}
+		.viewport .scaled-wrapper {
+			overflow: hidden; /* Otherwise transformed <iframe> makes whole page scroll too much. */
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.viewport iframe {
+			pointer-events: none;
+			border-style: initial;
+		}
+	</style>
+	<div template="viewport"
+		class="viewport"
+		style="display: inline-block;vertical-align:top;overflow:none;"
+		draggable=true
+	>
+		<div class="viewport-content-container">
+			<div class="title-bar"> <!-- Title and buttons -->
+				<div class="title-row">
+	    				<button title="remove viewport" onclick="
+						container.removeChild(this.parentNode.parentNode.parentNode.parentNode);
+						updateNumViewports();
+						pushStateToUrl();
+					">
+						<span class="material-icons">
+							delete
+						</span>
+
+					</button>
+					<span contenteditable class=title>(unnamed viewport)</span>
+				</div> <div class="title-row">
+					<input class=dim value=640>×<input class=dim value=480>
+					<button title="change viewport orientation" onclick="
+						const [i1, i2] = this.parentElement.querySelectorAll('input.dim');
+						[i1.value, i2.value] = [i2.value, i1.value];
+						for (const i of [i1,i2]) {
+							i.dispatchEvent(new Event('change', {bubbles: true})); // Trigger iframe resize.
+						}
+					">
+						<span class="material-icons">
+							swap_horiz
+						</span>
+					</button>
+				</div>
+			</div>
+			<div class="scaled-wrapper">
+			  <iframe class="vp-frame" style="position:relative;"></iframe>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Viewports are draggable. -->
+<script>
+	let dragged;
+	document.addEventListener("dragstart", ({target}) => {
+		dragged = target;
+	});
+	document.addEventListener("dragover", e => e.preventDefault());
+	document.addEventListener("drop", ({target}) => {
+		// TODO not work over iframe. need overlay to capture events.
+		while (target && target.className !== "viewport") { target = target.parentElement; console.log(target); }
+		if (! target || target.className !== "viewport") { return; }
+		// TODO: Consider reversing order if from other direction...
+		target.parentNode.insertBefore(dragged, target);
+
+		pushStateToUrl();
+	});
+</script>
+
+<script>
+	// Logic.
+	const targetInput = document.getElementById("targetInput");
+	const targetSrc = () => {
+		const val = targetInput.value;
+		if (/^https?:/.test(val)) {
+			return val;
+		}
+		return 'https://' + val;
+	}
+	const containerEl = document.getElementById("container");
+	const viewportEl = (initW, initH) => {
+		const el = template.viewport();
+		const frame = el.querySelector("iframe");
+		const [dimW, dimH] = el.querySelectorAll('.dim');
+		dimW.value = initW;
+		dimH.value = initH;
+		const setSize = () => {
+			const w = parseInt(dimW.value);
+			const h = parseInt(dimH.value);
+			const z = zoom();
+
+			// Note: We need to explicitly set viewport's
+			// width and height because layout does not take
+			// the zoom css tranform into account.
+			const scaledW = w * z;
+			const scaledH = h * z;
+			el.style.maxWidth = scaledW + 35 + 'px';
+			const frameWrapper = el.querySelector(".scaled-wrapper");
+			frameWrapper.style.width = scaledW + 'px';
+			frameWrapper.style.height = scaledH + 'px';
+		
+			const framestyle = `
+				width: ${w}px; height: ${h}px;
+				transform-origin: top left;
+				transform: scale(${z});
+			`;
+			frame.setAttribute("style", framestyle);
+
+			// Set grid size attributes.
+			// const toGridNum = x => Math.max(1, Math.min(Math.floor(x), 100));
+			// el.style.gridRowEnd = toGridNum(h / 100);
+			// el.style.gridColumnEnd = toGridNum(w / 100);
+		};
+		for (const input of [zoomOutText, zoomOutSlider, dimW, dimH]) {
+			input.addEventListener('change', setSize);
+		}
+
+		// Init.
+		el.addEventListener("error", () => console.log('err'));
+		setSize();
+		frame.src = targetSrc();
+		return el;
+	}
+	const updateTarget = () => {
+		const src = targetSrc();
+		for (const frame of document.querySelectorAll(".vp-frame")) {
+			frame.src = src;
+		}
+	}
+	targetInput.onchange = updateTarget;
+
+	const addViewport = () => {
+		const vp = viewportEl(640, 480);
+		containerEl.appendChild(vp);
+		pushStateToUrl();
+		updateNumViewports();
+		vp.scrollIntoView();
+	};
+	newViewportButton.onclick = addViewport;
+</script>
+
+
+<div id=tips>
+	<h3> Tips: </h3>
+	<ul>
+		<li>Localhost URLs work.</li>
+		<li>Device previews are draggable.</li>
+		<li>For best results, prefer width/height CSS @media queries to device-width/height.</li>
+		<li>
+			Your site's
+			<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options">X-Frame-Options header</a>
+			and
+			<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors">CSP frame-ancestors policy</a>
+			may need to be configured to allow <i>this</i> site to embed it in an iframe.
+		</li>
+	</ul>
+	<a href="#body">Back to top<a>
+</div>
+</body>
+</html>

@@ -10,6 +10,8 @@
 
 :- fun_eval hiord(true).
 
+bd_root := ~current_env('BD_ROOT').
+
 handle(get, Path, _Request) := html_string(Html) :-
 	%for debugging.
 	toplevel:use_module(library(bendean_dot_name)),
@@ -19,14 +21,14 @@ handle(get, Path, _Request) := html_string(Html) :-
 %% Routes for project demos....
 %% TODO clean static file serving
 handle(M, "/outliner/"||P, R) := ~(outliner:handle(demo, M, "/"||P, R)).
-handle(get, "/boids/"||P, _) := file_if_newer(Base/RelPath) :-
-	member(P-RelPath, [
-		""-'index.html',
-		[_|_]-P
-	]),
-	current_env('BD_ROOT', BD_ROOT),
-	atom_concat(BD_ROOT, '/s/bqn-boids/', Base).
-
+handle(get, "/boids/"||P, _) :=
+	file_if_newer(~bd_root/s/'bqn-boids'/RelPath)
+:- member(P-RelPath, [
+	""-'index.html',
+	[_|_]-P
+]).
+handle(get, "/previewer/", _) :=
+	file_if_newer(~bd_root/s/'previewer.html').
 
 static_page("/") := [
 	inline_html("<!DOCTYPE html>"),
@@ -54,8 +56,9 @@ project_listitem := li>[
 :- push_prolog_flag(multi_arity_warnings, off).
 
 project(_, _, _) :- fail. %% TODO...
-project("Notes", "Note / task management webapp", "https://github.com/bddean/bd/tree/main/ws/outliner", "/outliner/").
-project("[TODO] Boids", "Simple flocking simulation written in BQN", "#TODO", "/boids/").
+project("Outliner", "Note / task management webapp written mostly in vanilla JS and CSS", "https://github.com/bddean/bd/tree/main/pl/outliner.pl", "/outliner/").
+project("Boids", "Simple flocking simulation written in BQN", "https://github.com/bddean/bd/tree/main/s/bqn-boids/flock.bqn", "/boids/").
+project("Previewer", "Preview your page in multiple viewport sizes", "https://github.com/bddean/bd/tree/main/s/previewer.html", "/previewer/").
 project("[TODO] aibox", "TODO!!", "#TODO", "#TODO").
 project("[TODO] srs?? maybe??", "TODO!!", "#TODO", "#TODO").
 project("[TODO] solitaire?? maybe??", "TODO!!", "#TODO", "#TODO").
