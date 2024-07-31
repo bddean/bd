@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 set -e
 
-ciao build $1
+function die() {
+	>&2 echo Fatal: $@
+	exit 1
+}
+[[ "$1" ]] || die Need service name
+[[ "$2" ]] || die Need port
+
+ciao build -x $1
 
 # Start server in background with repl running.
-ciao toplevel                          \
-	-u "./ws/"$1"/cmds/serve.pl"         \
-	-e 'use_module(library(concurrency))'\
-	-e 'use_module(library(listing))'\
-	-e 'use_module(library(librowser))'\
-	-e 'eng_call(serve:main, create, create)'
+ciao toplevel                           \
+	-u "./ws/webapp/lib/webapp/webapp.pl" \
+	-e 'use_module(library(concurrency))' \
+	-e 'use_module(library(listing))'     \
+	-e 'use_module(library(librowser))'   \
+	-e "use_module(library($1))"          \
+	-e "eng_call(webapp:serve($1:handle, $2), create, create)"

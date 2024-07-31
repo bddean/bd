@@ -1,0 +1,44 @@
+
+/****************
+ * Generic themes and styles.
+ */
+
+@import url("../lib/et-book/et-book.css");
+
+* {
+	box-sizing: border-box;
+}
+body, input, button, select, textarea {
+	font-family: et-book;
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+select {border-radius: 0; }
+button {
+	background: transparent;
+	padding-top: 0;
+	padding-bottom: 0;
+	margin: 0;
+	border: 1px solid black;
+	border-radius: 0;
+}
+
+label { font-variant: small-caps; }
+
+button:not([aria-pushed=true]):not(:active) {
+	border-top-color: #ddd;
+	border-right-color: #ddd;
+ 	border-left-width: 2px;
+	border-bottom-width: 2px;
+}
+button[aria-pushed] {
+	border-radius: 10px;
+}
+
+button[aria-pushed=true] {
+	background: #d5e0e3;
+}
+.button-group {
+	display: flex;
+}

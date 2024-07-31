@@ -1,0 +1,232 @@
+/*****************/
+ * Generic themes and styles.
+ */
+/*:root {
+	background: white;
+	filter: invert(1);
+}*/
+
+@import "./lib/et-book/et-book.css";
+
+* {
+	box-sizing: border-box;
+	font-family: et-book;
+}
+
+
+
+select {border-radius: 0; }
+button {
+	background: transparent;
+	padding-top: 0;
+	padding-bottom: 0;
+	margin: 0;
+	border: 1px solid black;
+	border-radius: 0;
+}
+button:not([aria-pushed=true]):not(:active) {
+	border-top-color: #ddd;
+	border-right-color: #ddd;
+ 	border-left-width: 2px;
+	border-bottom-width: 2px;
+}
+button[aria-pushed] {
+	border-radius: 10px;
+}
+
+button[aria-pushed=true] {
+	background: #d5e0e3;
+}
+label { font-variant: small-caps; }
+.button-group {
+	display: flex;
+}
+/*.button-group>button:first-of-type {
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+.button-group>button:last-of-type {
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+}*/
+
+/****************
+ * Cards
+ */
+
+/* How contenteditable displays empty lines by default. */
+.content > div {
+	margin-top: 8px;
+}
+
+/** outline view mode **/
+body:has(#_collapsed[aria-pushed=true]) .card {
+	grid-template-rows: 1rem 1fr;
+	&>.content {
+		height: 1rem;
+		line-height: 1rem;
+		overflow-y: hidden;
+	}
+}
+body:has(#_collapsed[aria-pushed=true]) .card>.props {
+	display: none;
+}
+
+.card {
+	display: grid;
+	background: white;
+	&>.catalog{background: white;}
+	grid-template-columns: 1fr 150px;
+	grid-template-rows: min-content 1fr;
+	& > .content  { grid-row: 1; grid-column: 1; }
+	& > .props    { grid-row: 1; grid-column: 2; }
+	& > .catalog { grid-row: 2; grid-column: 1 / 3; }
+
+	&[data-removed] { display: none; }
+}
+
+
+
+:root:has(#_tree_view:checked) .card {
+	padding-left: 10px;
+	margin-top: 16px;
+
+	border-left: 1px solid gray;
+	&[_selected] { border-left: 2px solid black; }
+	&:not(:has(>:focus)) > .toolbar:not(:focus-within):not(:has(:active)) {
+		display: none;
+	}
+	/* HACK: Use "required" attribute to make empty inputs invalid */
+	&:not([_selected]) >.props:not(:has(
+		:is(input , select , textarea):not(:invalid)
+	)) { display: none; }
+	/* Additionally, hide individual empty items */
+	&:not([_selected]) > .props :is(
+		:invalid,
+		label:has(+:invalid),
+	) {
+		display: none;
+	}
+
+	&[data-task=""] > .props {
+		& label:has(+ [name=due]),[name=due]
+		, label:has(+ [name=scheduled]),[name=scheduled] {
+			display: none;
+		}
+	}
+}
+:root:has(#_column_view:checked) .card {
+	/* copied from squish view for now! */
+	grid-template-rows: 1rem 1fr;
+	grid-template-columns: 1fr min-content;
+
+	&[_selected]{
+		grid-template-rows: min-content 1fr;
+	}
+
+	&:not([_selected])>:not(.catalog) {
+		height: 1rem;
+		line-height: 1rem;
+		overflow-y: hidden;
+	}
+	&>.props {
+		grid-auto-flow: column;
+		grid-auto-columns: min-content;
+		&>label {
+			display: none;
+		}
+		&>* {
+			height: 1rem;
+		}
+	}
+}
+.card[_selected] {
+	&>.content {
+		background: #ecdac8;
+		outline: none;
+	}
+}
+.card>.content::first-line {
+	font-size: larger;
+	font-variant: small-caps;
+	font-weight: bold;
+}
+
+
+/** Containers of cards */
+.catalog { display: grid; }
+
+
+/*************
+ * Card toolbar styles. See the DOM layout in CONTROLS in
+ * ./main.js.
+ */
+
+
+.toolbar {
+	display: grid;
+	grid-auto-columns: min-content min-content;
+	grid-auto-flow: column;
+	column-gap: 8px;
+}
+.toolbar button {
+	/*font-size: 8pt;*/
+}
+
+/**
+ * Root card is selected.
+ * Similarly, "pop" is only enabled for grandchildren or deeper
+ * TODO still seems slower
+ * 	both of these r bad
+ */
+  :root:has(#_allcards > .card[_selected])
+		:is(#_trash_card, #_parent_card, #_promote_card)
+, :root:has(#_allcards > .card > .card[_selected])
+		#_promote_card
+{
+	opacity: 30%;
+	pointer-events: none;
+}
+
+/*************
+ * Property controls styles. See the DOM layout in PROPS in
+ * ./main.js.
+ */
+
+
+/* Layout */
+.props               { display: grid; grid-auto-rows: min-content;}
+/*.props > label       { grid-row: 1; }*/
+/*.props > :not(label) { grid-row: 2; }*/
+
+/* Looks */
+.props {
+	font-size: smaller;
+	padding-left: 6px; margin-left: 6px;
+	& :is(input, select, textarea) {
+		border: none;
+		border-bottom: 1px dotted black;
+	}
+	& * { background: transparent; }
+}
+
+
+select[name=task] {
+	&:has([value=""]:checked) { font-style: italic; }
+	&:has([value="TODO"]:checked) { font-weight: bold; }
+	&:has([value="DONE"]:checked) { font-weight: bold; }
+	&:has([value="PROG"]:checked) { font-weight: bold; }
+}
+
+/* Special styles for certain elements. */
+/*.card[data-task=TODO] > .props [name=task] { background-color: #fcc; }
+.card[data-task=DONE] > .props [name=task] { background-color: #ccf; }
+.card[data-task=PROG] > .props [name=task] { background-color: #cfc; }*/
+
+.card[data-task=DONE] > .content::first-line {
+	text-decoration: line-through;
+}
+
+textarea[name=tags] { font-family: monospace; font-size: smalle;}
+.props textarea { resize: none; }
+
