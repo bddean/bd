@@ -34,11 +34,17 @@ static_page("/") := [
 	inline_html("<!DOCTYPE html>"),
 	head>[],
 	body>[
-		h1>[+"Ben Dean"],
-		h2>[+"Projects"],
+		h1> +"Ben Dean",
+		p> [
+			+"This personal website is a work in progress.",
+			+" You can check out some of my projects below.",
+			+" I'm looking for work. See my ", a$[href=LinkedIn]> +"LinkedIn profile."
+		],
+		h2> +"Projects",
 		ul>Lis
 	]
 ] :-
+	LinkedIn="https://www.linkedin.com/in/ben-dean-b007bb91/",
 	findall(Li, project_listitem(Li), Lis).
 
 project_listitem := li>[

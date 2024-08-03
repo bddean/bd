@@ -57,7 +57,7 @@ TODO:
 
 <div style="margin-bottom: 20px;">
 	Currently showing
-	<input id=targetInput type=text value="http://example.com"></input>
+	<input id=targetInput type=text value="https://example.com"></input>
 	<button title="reload previews" onclick="
 		for (let frame of document.querySelectorAll('.viewport iframe')) {
 			frame.src=frame.src;
@@ -89,7 +89,7 @@ TODO:
 <!-- State saving / restoring. -->
 <script>
 	const defaultState = {
-		"targetSrc":"http://example.com",
+		"targetSrc":"https://example.com",
 		"zoom":0.3,
 		"devices":[
 			{"w":480,"h":640,"name":"Phone"},
