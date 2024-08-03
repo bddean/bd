@@ -14,7 +14,7 @@ bd_root := ~current_env('BD_ROOT').
 
 handle(get, Path, _Request) := html_string(Html) :-
 	%for debugging.
-	toplevel:use_module(library(bendean_dot_name)),
+	%toplevel:use_module(library(bendean_dot_name)),
 	static_page(Path, Dom),
 	dom_html(Dom, Html).
 

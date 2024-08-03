@@ -8,4 +8,4 @@ alias_paths([
   library='.'
 ]).
 lib('.').
-%cmd(bendean_dot_name, [main= 'cmds/serve']).
+cmd(bd, [main='cmds/bd']).
