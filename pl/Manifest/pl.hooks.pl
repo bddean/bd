@@ -1,8 +1,7 @@
-:- module(_, [], [ciaobld(bundlehooks)]).
-
-% Adapted from core
-:- use_module(ciaobld(ciaoc_aux), [runtests_dir/2]).
+:- module(_, [], [ciaobld(bundlehooks), library(utility/common)]).
+:- use_module(library(unittest)).
 
 '$builder_hook'(test) :- !,
-	runtests_dir(pl, 'lib').
-
+	run_tests_in_dir_rec('.', [], Code),
+	%% ??? Doesn't seem to work
+	halt(Code).
