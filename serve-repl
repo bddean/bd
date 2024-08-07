@@ -6,7 +6,8 @@ function die() {
 	exit 1
 }
 [[ "$1" ]] || die Need service name
-[[ "$2" ]] || die Need port
+[[ "$2" ]] || die Need handler
+[[ "$3" ]] || die Need port
 
 ciao build -x .
 
@@ -17,4 +18,4 @@ ciao toplevel                           \
 	-e 'use_module(library(listing))'     \
 	-e 'use_module(library(librowser))'   \
 	-e "use_module(library($1))"          \
-	-e "eng_call(webapp:serve($1:handle, $2), create, create)"
+	-e "eng_call(webapp:serve($1:$2, $3), create, create)"

@@ -58,14 +58,14 @@ define_action('pop', `
 	const c = selectedCard();
 	const p = firstAncestorMatching(c.parentElement, '.card');
 	const gp = p.parentElement;
-	if (! gp?.matches?.('.catalog')) return;
+	if (! gp?.matches?.('.catalog')) throw new Error('?');
 	gp.insertBefore(c, p.nextElementSibling);
 	setAsSelectedCard(c);
 });
 
 {
 	const def_layout_action = (n, h) => define_action(n, h, () => {
-		document.documentElement.setAttribute('view', name);
+		document.documentElement.setAttribute('view', n);
 	});
 	def_layout_action('prose', `
 		Switch to (default) outline-tree view showing note contents.`);
@@ -74,3 +74,23 @@ define_action('pop', `
 	def_layout_action('close', `
 		Switch to compact one-line outline-tree view.`);
 }
+
+define_action('wrap', `
+`, () => {
+	const c = selectedCard();
+	const cat = c.parentElement;
+	cat.insertAdjacentHTML('beforeend', CARD);
+	const k = cat.lastElementChild;
+	rehydrate(k);
+	setAsSelectedCard(k);
+	k.querySelector('catalog').appendChild(c);
+});
+
+define_action('raise', `
+`, () => {
+	const c = selectedCard();
+	const p = firstAncestorMatching(c.parentElement, '.card');
+	if (!p) throw new Error("Already at top.")
+	p.replaceWith(c);
+});
+

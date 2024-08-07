@@ -126,6 +126,8 @@ toolbar_dom --> [div([id=toolbar, class=toolbar], [
 		make-sib,
 		make-drop,
 		make-pop,
+		make-wrap,
+		make-raise,
 
 		''-'shows/',
 		shows-prose,

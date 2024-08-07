@@ -4,8 +4,6 @@ import { firstAncestorMatching } from './util.js';
 
 export const selectedCard = () =>	document.querySelector('[_selected]');
 
-
-
 export const deleteCard = (c=selectedCard()) => {
 	if(!c)return;
 	let p = c.parentElement;
@@ -59,6 +57,7 @@ export const setAsSelectedCard = (c) => {
 		&& ! lastSel.querySelector('.catalog').firstElementChild
 		&& lastSel.parentNode !== _allcards
 	) {
+		console.log('deleting', ! lastSel.querySelector('.catalog').firstElementChild, lastSel.outerHTML);
 		save_excursion(() => deleteCard(lastSel));
 	}
 	c?.setAttribute('_selected', '');
