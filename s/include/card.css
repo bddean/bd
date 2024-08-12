@@ -94,7 +94,7 @@ node. */
 	}
 }
 .content { outline: none; }
-.card[_selected] {
+.card:is([_selected], :has([_selected])) {
 	&>.content::first-line { color: var(--red); }
 	/* &>.content { background: #ecdac8;	}*/
 }

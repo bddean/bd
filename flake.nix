@@ -25,6 +25,8 @@ in {
 			caddy
 			rsync
 			my-ciao
+
+			gnum4
 		];
 		shellHook = ''
 			export BD_ROOT="$PWD"
