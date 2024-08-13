@@ -2,13 +2,17 @@
 	handle/5,
 	gather_head_inclusions/1, %% TEMP -- for testing
 	gather_head_inclusions_/2 %% TEMP -- for testing
-], [library(utility/common), pillow]).
+], [utility/common, pillow]).
 :- use_package(dcg/dcg_phrase).
 :- use_module(library(stream_utils), [file_to_string/2, string_to_file/2]).
 :- use_module(library(webapp/dom), [dom_html/2]).
 :- use_module(library(system), [current_env/2]).
 
 :- include(library(webapp/webapp_hooks)).
+
+libroot(Base) :-
+	absolute_file_name(library(outliner), '_opt', '.pl', '.', _, _, Base).
+
 
 mode := demo | local. %% TODO not referenced; use as a type
 filepath := '/home/ben/ol.html'.
@@ -66,10 +70,7 @@ handle(Mode, get, "/", _Request) := html_string(HTML) :-
 	doc_dom(~get_doc_contents_(Mode), DocTerms, []),
 	html2terms(HTML, DocTerms).
 
-handle(_, get, "/s/"||RelPath, _) := file_if_newer(Base/RelPath) :-
-	%% TODO check security.
-	current_env('BD_ROOT', BD_ROOT),
-	atom_concat(BD_ROOT, '/s/', Base).
+handle(_, get, "/s/"||RelPath, _) := file_if_newer(~libroot/s/RelPath).
 
 %% TODO extract my dom_expand stuff here??
 %% TODO let's query dir for this
@@ -89,8 +90,8 @@ head_dom --> [
 	title([], [verbatim("Outliner!")]),
 	style([id="_filter_style"], []),
 	style([id="_action_style"], [])
-	%script([src="/s/main.js"], []),
-	%link$[rel="stylesheet", href="/s/main.css"],
+	%script([src="s/main.js"], []),
+	%link$[rel="stylesheet", href="s/main.css"],
 ], {gather_head_inclusions(Etc)}, Etc.
 
 %% TODO convert to terms, I guess.
@@ -140,7 +141,10 @@ toolbar_dom__action_btn_(G-A) := button([group=G,action=A], []).
 :- use_module(library(system), [directory_files/2, file_property/2]).
 :- use_module(library(pathnames), [path_concat/3, path_dirname/2]).
 
-gather_head_inclusions := ~gather_head_inclusions_(~atom_concat(~current_env('BD_ROOT'),  '/s/include/')).
+gather_head_inclusions :=
+	~gather_head_inclusions_(
+		~atom_concat(~libroot, '/s/include/')
+	).
 
 suffix_(A, End)  :- atom_concat(_, End, A).
 
@@ -157,7 +161,7 @@ gather_head_inclusions_(F, [T]) :-
 	file_property(F, type(regular)),
 	%% TODO: Generalize, obviously!
 	atom_concat([
-		~current_env('BD_ROOT') , '/', RelPath
+		~libroot , '/', RelPath
 	], F),
 	member(Suffix-T, [
 		'.js' -script([type=module, src=RelPath], []),

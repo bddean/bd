@@ -8,6 +8,7 @@
 	assertions, nativeprops
 ]).
 :- use_module(library(format)).
+:- use_module(engine(stream_basic)).
 :- use_module(library(iso_misc)).
 :- use_module(library(hiordlib)).
 :- use_module(library(aggregates)).
