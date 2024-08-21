@@ -4,7 +4,6 @@ import { CARD, PROPS } from './templates.js';
 import { rehydrate, dehydrate } from './hydration.js';
 
 window.OL = window.OL || {};
-/***********/(() => {/**********/
 
 const cardContaining = (c=selectedCard()) => firstAncestorMatching(c.parentNode, '.card');
 
@@ -46,7 +45,21 @@ addEventListener('DOMContentLoaded', () => {
 
 const updateFilter = (value) => {
 	_filter_style.textContent=`
-		.card:not(:is(${value})) > :not(.catalog) { display: none; }
+		.card:not(:is(${value})) {
+			display: none;
+			&:has(:is(${value})) {
+				display: grid;
+				/* COPIED FROM CARD.CSS */
+				grid-template-rows: 1rem 1fr;
+				>.content {
+					height: 1rem;
+					line-height: 1rem;
+					overflow-y: hidden;
+				}
+				>.props { display: none; }
+				/* END COPIED SECTION */
+			}
+		}
 	`;
 }
 document.addEventListener('DOMContentLoaded',
@@ -59,4 +72,3 @@ document.addEventListener('DOMContentLoaded',
 Object.assign(OL, {
 	updateFilter
 });
-/**********/})();/**************************/

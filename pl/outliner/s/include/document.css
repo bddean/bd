@@ -1,4 +1,3 @@
-
 /****************
  * Generic themes and styles.
  */
@@ -35,7 +34,6 @@ button:not([aria-pushed=true]):not(:active) {
 button[aria-pushed] {
 	border-radius: 10px;
 }
-
 button[aria-pushed=true] {
 	background: #d5e0e3;
 }

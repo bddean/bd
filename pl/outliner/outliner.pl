@@ -103,7 +103,9 @@ body_dom(CardsHtml) -->
 			[div([id="_allcards", class="catalog"], [CardsHtml])]
 		), Kids)
 	},
-	[div([id="main"], Kids)].
+	[
+		div([id="main"], Kids)
+	].
 
 filter_dom --> [
 	div([id="filter"], [
@@ -133,7 +135,9 @@ toolbar_dom --> [div([id=toolbar, class=toolbar], [
 		''-'shows/',
 		shows-prose,
 		shows-rows,
-		shows-close
+		shows-close,
+
+		''-'TEST_UNDO'
 	])
 ])].
 toolbar_dom__action_btn_(G-A) := button([group=G,action=A], []).

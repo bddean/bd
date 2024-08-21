@@ -2,6 +2,7 @@ import { setAsSelectedCard, selectedCard, focusCard, deleteCard } from './focus.
 import { CARD }  from './templates.js';
 import { rehydrate } from './hydration.js';
 import { firstAncestorMatching } from './util.js';
+import { markUndoBoundary } from './undo.js';
 
 export const action = {}; // Registered interactive commands.
 export const helpdoc = {};
@@ -94,3 +95,6 @@ define_action('raise', `
 	p.replaceWith(c);
 });
 
+define_action('TEST_UNDO', ``, () => {
+	markUndoBoundary();
+});

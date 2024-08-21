@@ -46,14 +46,10 @@ node. */
 		display: none;
 	}
 	/* HACK: Use "required" attribute to make empty inputs invalid */
-	&:not([_selected]) >.props:not(:has(
-		:is(input , select , textarea):not(:invalid)
-	)) { display: none; }
+	&:not([_selected]) >.props:not(:has(:is(input , select , textarea):not(:invalid))) {
+		display: none; }
 	/* Additionally, hide individual empty items */
-	&:not([_selected]) > .props :is(
-		:invalid,
-		label:has(+:invalid),
-	) {
+	&:not([_selected]) > .props :is(:invalid, label:has(+:invalid)) {
 		display: none;
 	}
 

@@ -42,7 +42,7 @@ document.addEventListener('focusin', e => {
 });
 
 
-export const focusCard = (c = selectedCard()) => c.querySelector('.content').focus();
+export const focusCard = (c = selectedCard()) => c?.querySelector('.content').focus();
 export const setAsSelectedCard = (c) => {
 	if (c && ! c.classList.contains('card')) { throw new Error(`Not a card: ${c}`); }
 	if (c?.hasAttribute?.('_selected')) return;
