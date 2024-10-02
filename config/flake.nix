@@ -12,6 +12,8 @@ outputs = { self, nixpkgs }: let
     inherit system;
     config.allowUnfree = true;
   });
+  common-packages = (syspkgs: with syspkgs; [ #TODO
+  ]);
 in {
 packages = forAllSystems (system: let
 	syspkgs = pkgs.${system};
