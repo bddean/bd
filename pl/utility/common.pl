@@ -15,6 +15,8 @@
 :- use_module(library(llists)).
 :- use_module(library(lists)).
 :- use_module(library(terms)).
+:- use_module(library(write)).
+:- use_module(library(streams)).
 
 :- fun_eval hiord(true).
 

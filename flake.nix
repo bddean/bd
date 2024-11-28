@@ -28,7 +28,7 @@ in {
 				buildInputs = with pkgs; [
 					caddy
 					rsync
-					my-ciao
+					#my-ciao
 					gnum4
 				];
 				shellHook = ''
